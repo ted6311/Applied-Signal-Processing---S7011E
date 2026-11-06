@@ -1,17 +1,16 @@
 function [r,k] = my_acs(X)
-    N = size(X,2)
-    Relasation = size(X,1)
+    realization = size(X,2);
+    N = size(X,1);
+    r = zeros(2*N-1,1);
 
-    for i = 1:i
-    
-    for i = 1:size(X,2)
-        for j = 1:size(X,1)
-
+    k = -(N-1):N-1; % -999 to 999
+    for i = 1:realization
+        x = X(:,i);
+        for j = 1:length(k)
+            lag = k(j);
+            
 
 
         end
     end
-
-
- a = 1;
 end

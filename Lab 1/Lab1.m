@@ -9,4 +9,3 @@ load("lab1_data.mat");
 %% 2.1
 
 [r,k] = my_acs(X);
-

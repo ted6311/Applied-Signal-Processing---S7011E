@@ -7,10 +7,15 @@ function [r,k] = my_acs(X)
     for i = 1:realization
         x = X(:,i);
         for j = 1:length(k)
+            lag = k(j);
             
-            
+            if lag >= 0
+                r(j) = r(j) + sum(x(1:N-lag) .* x(1+lag:N));
+            else
 
-
+                lag = abs(lag);
+                r(j) = r(j) + sum(x(1+lag:N) .* x(1:N-lag));
+            end    
         end
     end
 end
