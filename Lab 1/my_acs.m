@@ -1,10 +1,13 @@
 function [r,k] = my_acs(X)
-    N = size(X,2);
-    realization = size(X,1);
+    realization = size(X,2);
+    N = size(X,1);
     r = zeros(2*N-1,1);
+
+    k = -(N-1):N-1; % -999 to 999
     for i = 1:realization
         x = X(:,i);
-        for k = 0:2*N-1
+        for j = 1:length(k)
+            
             
 
 
