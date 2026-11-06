@@ -1,0 +1,17 @@
+function [r,k] = my_acs(X)
+    N = size(X,2)
+    Relasation = size(X,1)
+
+    for i = 1:i
+    
+    for i = 1:size(X,2)
+        for j = 1:size(X,1)
+
+
+
+        end
+    end
+
+
+ a = 1;
+end
