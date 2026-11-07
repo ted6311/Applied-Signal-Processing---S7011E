@@ -18,6 +18,9 @@ load("lab1_data.mat");
 % func my_corrmtx(r,p), r is output from my_acs, 
 % p = desired size of the correlation matrix. 
 
-p = 100;
+p = 4;
+
+% start by sorting first column and first row. 
+
 
 [R] = my_corrmtx(r,p);

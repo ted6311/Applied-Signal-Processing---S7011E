@@ -1,0 +1,6 @@
+function [R] = my_corrmtx(r,p)
+    % Find center
+    center = length()
+
+
+end
