@@ -9,3 +9,15 @@ load("lab1_data.mat");
 %% 2.1
 
 [r,k] = my_acs(X);
+
+
+
+
+%% 2.2
+
+% func my_corrmtx(r,p), r is output from my_acs, 
+% p = desired size of the correlation matrix. 
+
+p = 100;
+
+[R] = my_corrmtx(r,p);
