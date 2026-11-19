@@ -10,8 +10,9 @@ load("lab1_data.mat");
 
 [r,k] = my_acs(X);
 
-
-
+% Plot
+figure;
+plot(k,r)
 
 %% 2.2
 
