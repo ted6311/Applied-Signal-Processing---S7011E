@@ -1,0 +1,20 @@
+function P = my_periodogram(x,win)
+N = length(x);
+if nargin == 2
+    if strcmpi(win,'bartlett')
+        w = bartlett(N); % Använder inbyggda funktionerna för att skapa fönstrena
+    elseif strcmpi(win,'hanning')
+        w = hanning(N);
+    elseif strcmpi(win,'hamming')
+        w = hamming(N);
+    elseif strcmpi(win,'blackman')
+        w = blackman(N);
+    else
+        error('Undefined window function!');
+    end
+end
+x = x(:); % Make sure x is a column vector
+w = w(:);
+x = x.*w; % Apply the window scaling to the sample vector, multiplication in time domain.
+% Rest of the code goes here...
+P = fft(x);

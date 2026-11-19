@@ -1,13 +1,13 @@
 function P = my_periodogram(x,win)
 N = length(x);
 if nargin == 2
-    if strcmp(win,'bartlett')
+    if strcmpi(win,'bartlett')
         w = bartlett(N); % Använder inbyggda funktionerna för att skapa fönstrena
-    elseif strcmp(win,'hanning')
+    elseif strcmpi(win,'hanning')
         w = hanning(N);
-    elseif strcmp(win,'hamming')
+    elseif strcmpi(win,'hamming')
         w = hamming(N);
-    elseif strcmp(win,'blackman')
+    elseif strcmpi(win,'blackman')
         w = blackman(N);
     else
         error('Undefined window function!');
@@ -15,6 +15,7 @@ if nargin == 2
 end
 x = x(:); % Make sure x is a column vector
 w = w(:);
-x = x.*w;
+x = x.*w; % Apply the window scaling to the sample vector, multiplication in time domain.
 % Rest of the code goes here...
-P = x;
+[r,~] = my_acs(x); % Calculate the new window scaled correlation factors
+P = fft(r); % perform DFT on the correlation factors and return the resulting periodogram.
