@@ -109,8 +109,8 @@ Pblackman = 1/2/pi*conv(Pb,fft(blackman(length(X(:,1)))));
 
 %% Compare windowed spectra from the complete autocorrelation sequence
 figure;
-plot(10*log10(abs([Pbartlett, Phanning, ...
-    Phamming, Pblackman])));
+plot(k, 10*log10(abs([Pb,Pbartlett(1:length(Pb)), Phanning(1:length(Pb)), ...
+    Phamming(1:length(Pb)), Pblackman(1:length(Pb))])));
 legend('Baseline','Bartlett','Hanning','Hamming','Blackman');
 xlabel('Lag');
 ylabel('Power/frequency (dB)');
