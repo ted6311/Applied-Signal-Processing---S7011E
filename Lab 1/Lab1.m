@@ -27,42 +27,91 @@ p = 4;
 [R] = my_corrmtx(r,p);
 
 %% 2.3
-n = 24; % Val av realisering
+n = 24; % Val av realisering för test på en av dem
 my_realization = X(:,n);
 
+%% Baseline periodogram
+[rb,~] = my_acs(my_realization);
+Pt = fft(rb);
+% figure()
+% plot(k, 10*log10(abs(P)));
+% title('Baseline periodogram')
+% xlabel('lag');
+% ylabel('Power/frequency (dB)');
+% grid on;
+
 %% Bartlett window scaled periodogram estimation
-P = my_periodogram(my_realization,'bartlett');
+P1t = my_periodogram(my_realization,'bartlett');
 % Plot the estimated power spectral density
-figure()
-frequency = linspace(-0.5, 0.5, numel(P));
-plot(frequency, 10*log10(abs(P)));
-xlabel('Normalized frequency (\omega_0)');
-ylabel('Power/frequency (dB)');
-grid on;
+% figure()
+% plot(k, 10*log10(abs(P1)));
+% title('Bartlett window periodogram')
+% xlabel('lag');
+% ylabel('Power/frequency (dB)');
+% grid on;
 
 %% Hanning
-P2 = my_periodogram(my_realization,'hanning');
-figure()
-frequency = linspace(-0.5, 0.5, numel(P2));
-plot(frequency, 10*log10(abs(P2)));
-xlabel('Normalized frequency (\omega_0)');
-ylabel('Power/frequency (dB)');
-grid on;
+P2t = my_periodogram(my_realization,'hanning');
+% figure()
+% plot(k, 10*log10(abs(P2)));
+% title('Hanning window periodogram');
+% xlabel('lag');
+% ylabel('Power/frequency (dB)');
+% grid on;
 
 %% Hamming
-P3 = my_periodogram(my_realization);
-figure()
-frequency = linspace(-0.5, 0.5, numel(P3));
-plot(frequency, 10*log10(abs(P3)));
-xlabel('Normalized frequency (\omega_0)');
+P3t = my_periodogram(my_realization,'hamming');
+% figure()
+% plot(k, 10*log10(abs(P3)));
+% title('Hamming window periodogram');
+% xlabel('lag');
+% ylabel('Power/frequency (dB)');
+% grid on;
+
+%% Blackman
+P4t = my_periodogram(my_realization,'blackman');
+% figure()
+% plot(k, 10*log10(abs(P4)));
+% title('Blackman window periodogram');
+% xlabel('lag');
+% ylabel('Power/frequency (dB)');
+% grid on;
+
+%% Averaging for all realizations
+for i = 1:length(X(1,:))
+    realization = X(:,i);
+    P1(:,i) = my_periodogram(realization,'bartlett');
+    P2(:,i) = my_periodogram(realization,'hanning');
+    P3(:,i) = my_periodogram(realization,'hamming');
+    P4(:,i) = my_periodogram(realization,'blackman');
+end
+meanP1 = mean(P1, 2);
+meanP2 = mean(P2, 2);
+meanP3 = mean(P3, 2);
+meanP4 = mean(P4, 2);
+
+%% Compare averaged periodogram estimates
+figure;
+plot(k, 10*log10(abs([meanP1, meanP2, meanP3, meanP4])));
+legend('Bartlett','Hanning','Hamming','Blackman');
+xlabel('lag');
 ylabel('Power/frequency (dB)');
 grid on;
 
-%% Blackman
-P4 = my_periodogram(my_realization,'blackman');
-figure()
-frequency = linspace(-0.5, 0.5, numel(P4));
-plot(frequency, 10*log10(abs(P4)));
-xlabel('Normalized frequency (\omega_0)');
+%% The periodograms from the complete acs
+
+% Baseline
+Pb = fft(r);
+Pbartlett = 1/2/pi*conv(Pb,fft(bartlett(length(X(:,1))))); % Faltning i frekvensdomänen, dock problem med att skiten blir större
+Phanning = 1/2/pi*conv(Pb,fft(hanning(length(X(:,1)))));
+Phamming = 1/2/pi*conv(Pb,fft(hamming(length(X(:,1)))));
+Pblackman = 1/2/pi*conv(Pb,fft(blackman(length(X(:,1)))));
+
+%% Compare windowed spectra from the complete autocorrelation sequence
+figure;
+plot(10*log10(abs([Pbartlett, Phanning, ...
+    Phamming, Pblackman])));
+legend('Baseline','Bartlett','Hanning','Hamming','Blackman');
+xlabel('Lag');
 ylabel('Power/frequency (dB)');
 grid on;

@@ -15,7 +15,7 @@ if nargin == 2
 end
 x = x(:); % Make sure x is a column vector
 w = w(:);
-x = x.*w; % Apply the window scaling to the sample vector, multiplication in time domain.
+x2 = x.*w; % Apply the window scaling to the sample vector, multiplication in time domain.
 % Rest of the code goes here...
-[r,~] = my_acs(x); % Calculate the new window scaled correlation factors
+[r,~] = my_acs(x2); % Calculate the new window scaled correlation factors
 P = fft(r); % perform DFT on the correlation factors and return the resulting periodogram.
