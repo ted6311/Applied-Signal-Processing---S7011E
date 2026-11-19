@@ -77,6 +77,15 @@ P4t = my_periodogram(my_realization,'blackman');
 % ylabel('Power/frequency (dB)');
 % grid on;
 
+%% Comparison plot
+figure;
+plot(k, 10*log10(abs([Pt, P1t, P2t, P3t, P4t])));
+title('Comparison between all windows for realization:',+n)
+legend('Baseline','Bartlett','Hanning','Hamming','Blackman');
+xlabel('Lag');
+ylabel('Power/frequency (dB)');
+grid on;
+
 %% Averaging for all realizations
 for i = 1:length(X(1,:))
     realization = X(:,i);
