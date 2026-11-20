@@ -18,8 +18,7 @@ if nargin == 2
 end
 
 w = w(:);
-x2 = copy(x); % Avoiding aliasing
-x2 = x2.*w; % Apply the window scaling to the sample vector, multiplication in time domain.
+x2 = x.*w; % Apply the window scaling to the sample vector, multiplication in time domain.
 
 [r,~] = my_acs(x2); % Calculate the new window scaled correlation factors
 
