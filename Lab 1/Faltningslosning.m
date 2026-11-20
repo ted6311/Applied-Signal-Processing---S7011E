@@ -155,3 +155,23 @@ title('AR(4) Power Spectral Density using Yule-Walker');
 xlabel('Normalized frequency');
 ylabel('Power/frequency (dB)');
 grid on;
+
+
+
+orders = [2,4,8,12]; 
+figure;
+hold on;
+title('Yule-Walker spectrum estimates for different model orders');
+xlabel('Normalized frequency');
+ylabel('Power/frequency (dB)');
+grid on;
+
+for i = 1:length(orders)
+    [arCoefficients, noiseVariance] = aryule(X(:,1), orders(i));
+    [arSpectrum, frequency] = freqz(sqrt(noiseVariance), ...
+        [1, arCoefficients], 1024, 'whole');
+    plot(frequency, 10*log10(abs(arSpectrum).^2), ...
+        'DisplayName', ['AR(', num2str(orders(i)), ')']);
+end
+
+legend show;
