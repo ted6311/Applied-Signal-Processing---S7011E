@@ -142,4 +142,4 @@ grid on;
 %% Yule - Walker method
 % Estimate AR coefficients and innovation variance using Yule-Walker
 arOrder = 4;
-[arCoefficients, noiseVariance] = aryule(r, arOrder);
+[arCoefficients, noiseVariance] = aryule(X(:,1), arOrder); % Built in yule walker AR function :)
