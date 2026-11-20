@@ -8,7 +8,7 @@ load("lab1_data.mat");
 
 %% 2.1
 
-[r,k] = my_acs(X);
+[r,k] = acs2(X);
 
 % Plot
 figure;
@@ -31,7 +31,7 @@ n = 24; % Val av realisering för test på en av dem
 my_realization = X(:,n);
 
 %% Baseline periodogram
-[rb,~] = my_acs(my_realization);
+[rb,~] = acs2(my_realization);
 Pt = fft(rb);
 % figure()
 % plot(k, 10*log10(abs(P)));
@@ -90,7 +90,7 @@ grid on;
 
 for i = 1:length(X(1,:))
     realization = X(:,i);
-    [rtemp,~] = my_acs(realization);
+    [rtemp,~] = acs2(realization);
     P(:,i) = fft(rtemp);
     P1(:,i) = my_periodogram(realization,'bartlett');
     P2(:,i) = my_periodogram(realization,'hanning');
@@ -98,7 +98,7 @@ for i = 1:length(X(1,:))
     P4(:,i) = my_periodogram(realization,'blackman');
     clear rtemp
 end
-meanP = mean(P,2);
+meanP = mean(P, 2);
 meanP1 = mean(P1, 2);
 meanP2 = mean(P2, 2);
 meanP3 = mean(P3, 2);
@@ -107,17 +107,17 @@ meanP4 = mean(P4, 2);
 %% Compare averaged periodogram estimates
 figure;
 plot(k, 10*log10(abs([meanP, meanP1, meanP2, meanP3, meanP4])));
-title('Periodograms of the sequences using different windows')
+title('Periodograms of the mean of seperate autocorrelation sequences using different windows')
 legend('Square', 'Bartlett','Hanning','Hamming','Blackman');
 xlabel('lag');
-ylabel('Power/frequency (dB)');
+ylabel('Spectral power (dB)');
 grid on;
 
 %% The periodograms from the complete acs
 
 x = X(:);
 
-[rx, kx] = my_acs(x);
+[rx, kx] = acs2(x);
 
 
 Pb = fft(rx);
@@ -134,7 +134,7 @@ plot(kx, 10*log10(abs([Pb, ...
                        Pbartlett, ...
                        Phanning, ...
                        Phamming, ...
-                       Pblackman])));
+                       Pblackman])),'*');
 
 legend('Baseline','Bartlett','Hanning','Hamming','Blackman');
 xlabel('Lag');

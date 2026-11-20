@@ -20,6 +20,6 @@ end
 w = w(:);
 x2 = x.*w; % Apply the window scaling to the sample vector, multiplication in time domain.
 
-[r,~] = my_acs(x2); % Calculate the new window scaled correlation factors
+[r,~] = acs2(x2); % Calculate the new window scaled correlation factors
 
 P = fft(r); % perform DFT on the correlation factors and return the resulting periodogram.
