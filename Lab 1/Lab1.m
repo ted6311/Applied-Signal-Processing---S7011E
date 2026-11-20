@@ -108,19 +108,27 @@ ylabel('Power/frequency (dB)');
 grid on;
 
 %% The periodograms from the complete acs
+x = X(:);
 
-% Baseline
-Pb = fft(r);
-Pbartlett = 1/2/pi*conv(Pb,fft(bartlett(length(X(:,1))))); % Faltning i frekvensdomänen, dock problem med att skiten blir större
-Phanning = 1/2/pi*conv(Pb,fft(hanning(length(X(:,1)))));
-Phamming = 1/2/pi*conv(Pb,fft(hamming(length(X(:,1)))));
-Pblackman = 1/2/pi*conv(Pb,fft(blackman(length(X(:,1)))));
+[rx, kx] = my_acs(x);
+Pb = fft(rx);
+
+Pbartlett = my_periodogram(x,'bartlett');
+Phanning  = my_periodogram(x,'hanning');
+Phamming  = my_periodogram(x,'hamming');
+Pblackman = my_periodogram(x,'blackman');
+
 
 %% Compare windowed spectra from the complete autocorrelation sequence
 figure;
-plot(k, 10*log10(abs([Pb,Pbartlett(1:length(Pb)), Phanning(1:length(Pb)), ...
-    Phamming(1:length(Pb)), Pblackman(1:length(Pb))])));
+plot(kx, 10*log10(abs([Pb, ...
+                       Pbartlett, ...
+                       Phanning, ...
+                       Phamming, ...
+                       Pblackman])));
+
 legend('Baseline','Bartlett','Hanning','Hamming','Blackman');
 xlabel('Lag');
 ylabel('Power/frequency (dB)');
+title('Periodograms using all data X(:)');
 grid on;
