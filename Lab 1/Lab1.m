@@ -87,13 +87,18 @@ ylabel('Power/frequency (dB)');
 grid on;
 
 %% Averaging for all realizations
+
 for i = 1:length(X(1,:))
     realization = X(:,i);
+    [rtemp,~] = my_acs(realization);
+    P(:,i) = fft(rtemp);
     P1(:,i) = my_periodogram(realization,'bartlett');
     P2(:,i) = my_periodogram(realization,'hanning');
     P3(:,i) = my_periodogram(realization,'hamming');
     P4(:,i) = my_periodogram(realization,'blackman');
+    clear rtemp
 end
+meanP = mean(P,2);
 meanP1 = mean(P1, 2);
 meanP2 = mean(P2, 2);
 meanP3 = mean(P3, 2);
@@ -101,8 +106,9 @@ meanP4 = mean(P4, 2);
 
 %% Compare averaged periodogram estimates
 figure;
-plot(k, 10*log10(abs([meanP1, meanP2, meanP3, meanP4])));
-legend('Bartlett','Hanning','Hamming','Blackman');
+plot(k, 10*log10(abs([meanP, meanP1, meanP2, meanP3, meanP4])));
+title('Periodograms of the sequences using different windows')
+legend('Square', 'Bartlett','Hanning','Hamming','Blackman');
 xlabel('lag');
 ylabel('Power/frequency (dB)');
 grid on;
@@ -112,10 +118,9 @@ grid on;
 x = X(:);
 
 [rx, kx] = my_acs(x);
-fprintf('Elapsed time for my_acs:')
+
 
 Pb = fft(rx);
-fprintf('Elapsed time for fft :')
 
 Pbartlett = my_periodogram(x,'bartlett');
 Phanning  = my_periodogram(x,'hanning');

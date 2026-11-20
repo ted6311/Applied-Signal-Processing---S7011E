@@ -1,0 +1,147 @@
+clear; clc; 
+
+
+% X-Matrix 1000x100
+load("lab1_data.mat");
+% each column = one realization
+
+
+%% 2.1
+
+[r,k] = my_acs(X);
+
+% Plot
+figure;
+plot(k,r)
+
+%% 2.2
+
+% func my_corrmtx(r,p), r is output from my_acs, 
+% p = desired size of the correlation matrix. 
+
+p = 4;
+
+% start by sorting first column and first row. 
+
+
+[R] = my_corrmtx(r,p);
+
+%% 2.3
+n = 24; % Val av realisering för test på en av dem
+my_realization = X(:,n);
+
+%% Baseline periodogram
+[rb,~] = my_acs(my_realization);
+Pt = fft(rb);
+% figure()
+% plot(k, 10*log10(abs(P)));
+% title('Baseline periodogram')
+% xlabel('lag');
+% ylabel('Power/frequency (dB)');
+% grid on;
+
+%% Bartlett window scaled periodogram estimation
+P1t = my_periodogram(my_realization,'bartlett');
+% Plot the estimated power spectral density
+% figure()
+% plot(k, 10*log10(abs(P1)));
+% title('Bartlett window periodogram')
+% xlabel('lag');
+% ylabel('Power/frequency (dB)');
+% grid on;
+
+%% Hanning
+P2t = my_periodogram(my_realization,'hanning');
+% figure()
+% plot(k, 10*log10(abs(P2)));
+% title('Hanning window periodogram');
+% xlabel('lag');
+% ylabel('Power/frequency (dB)');
+% grid on;
+
+%% Hamming
+P3t = my_periodogram(my_realization,'hamming');
+% figure()
+% plot(k, 10*log10(abs(P3)));
+% title('Hamming window periodogram');
+% xlabel('lag');
+% ylabel('Power/frequency (dB)');
+% grid on;
+
+%% Blackman
+P4t = my_periodogram(my_realization,'blackman');
+% figure()
+% plot(k, 10*log10(abs(P4)));
+% title('Blackman window periodogram');
+% xlabel('lag');
+% ylabel('Power/frequency (dB)');
+% grid on;
+
+%% Comparison plot
+figure;
+plot(k, 10*log10(abs([Pt, P1t, P2t, P3t, P4t])));
+title('Comparison between all windows for realization:',+n)
+legend('Baseline','Bartlett','Hanning','Hamming','Blackman');
+xlabel('Lag');
+ylabel('Power/frequency (dB)');
+grid on;
+
+%% Averaging for all realizations
+for i = 1:length(X(1,:))
+    realization = X(:,i);
+    [rtemp,~] = my_acs
+    P1(:,i) = my_periodogram(realization,'bartlett');
+    P2(:,i) = my_periodogram(realization,'hanning');
+    P3(:,i) = my_periodogram(realization,'hamming');
+    P4(:,i) = my_periodogram(realization,'blackman');
+end
+meanP1 = mean(P1, 2);
+meanP2 = mean(P2, 2);
+meanP3 = mean(P3, 2);
+meanP4 = mean(P4, 2);
+
+%% Compare averaged periodogram estimates
+figure;
+plot(k, 10*log10(abs([meanP1, meanP2, meanP3, meanP4])));
+title('Periodograms of the sequences using different windows')
+legend('Bartlett','Hanning','Hamming','Blackman');
+xlabel('lag');
+ylabel('Power/frequency (dB)');
+grid on;
+
+%% The periodograms from the complete acs
+
+x = X(:);
+
+[rx, kx] = my_acs(x);
+fprintf('Elapsed time for my_acs:')
+
+Pb = fft(rx);
+fprintf('Elapsed time for fft :')
+
+Pbartlett = my_periodogram(x,'bartlett');
+Phanning  = my_periodogram(x,'hanning');
+Phamming  = my_periodogram(x,'hamming');
+Pblackman = my_periodogram(x,'blackman');
+
+
+%% Compare windowed spectra from the complete autocorrelation sequence
+figure;
+plot(kx, 10*log10(abs([Pb, ...
+                       Pbartlett, ...
+                       Phanning, ...
+                       Phamming, ...
+                       Pblackman])));
+
+legend('Baseline','Bartlett','Hanning','Hamming','Blackman');
+xlabel('Lag');
+ylabel('Power/frequency (dB)');
+title('Periodograms using all data X(:)');
+grid on;
+
+
+
+%% Yule - Walker method
+% Estimate AR coefficients and innovation variance using Yule-Walker
+arOrder = 4;
+[arCoefficients, noiseVariance] = aryule(X(:,1), arOrder); % Built in yule walker AR function :)
