@@ -1,21 +1,12 @@
 function [r,k] = my_acs(X)
-    realization = size(X,2);
-    N = size(X,1);
-    r = zeros(2*N-1,1);
-
-    k = -(N-1):N-1; % -999 to 999
-    for i = 1:realization
+    Ncols = size(X,2);
+    Nrows = size(X,1);
+    r = zeros(2*Nrows-1,1); % Pre-allocation of memory
+    k = -(Nrows-1):Nrows-1; 
+    for i = 1:Ncols
         x = X(:,i);
-        for j = 1:length(k)
-            lag = k(j);
-            
-            if lag >= 0
-                r(j) = r(j) + sum(x(1:N-lag) .* x(1+lag:N));
-            else
-
-                lag = abs(lag);
-                r(j) = r(j) + sum(x(1+lag:N) .* x(1:N-lag));
-            end    
-        end
+        xstar = flip(x);
+        r = r + conv(x,xstar); % Convolution of x and x*
     end
+    r = r./Nrows./Ncols; % Normalize the resulting autocorrelation factors
 end

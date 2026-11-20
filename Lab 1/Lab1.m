@@ -1,3 +1,4 @@
+
 clear; clc; 
 
 
@@ -8,7 +9,7 @@ load("lab1_data.mat");
 
 %% 2.1
 
-[r,k] = acs2(X);
+[r,k] = my_acs(X);
 
 % Plot
 figure;
@@ -31,7 +32,7 @@ n = 24; % Val av realisering för test på en av dem
 my_realization = X(:,n);
 
 %% Baseline periodogram
-[rb,~] = acs2(my_realization);
+[rb,~] = my_acs(my_realization);
 Pt = fft(rb);
 % figure()
 % plot(k, 10*log10(abs(P)));
@@ -90,7 +91,7 @@ grid on;
 
 for i = 1:length(X(1,:))
     realization = X(:,i);
-    [rtemp,~] = acs2(realization);
+    [rtemp,~] = my_acs(realization);
     P(:,i) = fft(rtemp);
     P1(:,i) = my_periodogram(realization,'bartlett');
     P2(:,i) = my_periodogram(realization,'hanning');
@@ -98,7 +99,7 @@ for i = 1:length(X(1,:))
     P4(:,i) = my_periodogram(realization,'blackman');
     clear rtemp
 end
-meanP = mean(P, 2);
+meanP = mean(P,2);
 meanP1 = mean(P1, 2);
 meanP2 = mean(P2, 2);
 meanP3 = mean(P3, 2);
@@ -107,34 +108,38 @@ meanP4 = mean(P4, 2);
 %% Compare averaged periodogram estimates
 figure;
 plot(k, 20*log10(abs([meanP, meanP1, meanP2, meanP3, meanP4])));
-title('Periodograms of the mean of seperate autocorrelation sequences using different windows')
+title('Periodograms of the sequences using different windows')
 legend('Square', 'Bartlett','Hanning','Hamming','Blackman');
 xlabel('lag');
-ylabel('Spectral power (dB)');
+ylabel('Power/frequency (dB)');
 grid on;
 
-%% The periodograms from the complete acs
+%% convultuon
 
-x = X(:);
+Pb = fft(r);
+Pbartlett = 1/2/pi*conv(Pb,fft(bartlett(length(X(:,1))))); % Faltning i frekvensdomänen, dock problem med att skiten blir större
+Phanning = 1/2/pi*conv(Pb,fft(hanning(length(X(:,1)))));
+Phamming = 1/2/pi*conv(Pb,fft(hamming(length(X(:,1)))));
+Pblackman = 1/2/pi*conv(Pb,fft(blackman(length(X(:,1)))));
 
-[rx, kx] = acs2(x);
 
+% Möjligt att man behöver
+% plotta så här, då det blir en väldigt synlig cutoff vid 2000:e värdet.
 
-Pb = fft(rx);
-
-Pbartlett = my_periodogram(x,'bartlett');
-Phanning  = my_periodogram(x,'hanning');
-Phamming  = my_periodogram(x,'hamming');
-Pblackman = my_periodogram(x,'blackman');
+plot(k, 20*log10(abs([Pb,Pbartlett(1:length(Pb)), Phanning(1:length(Pb)), ...
+    Phamming(1:length(Pb)), Pblackman(1:length(Pb))])));
+legend('Baseline','Bartlett','Hanning','Hamming','Blackman');
+xlabel('Lag');
+ylabel('Power/frequency (dB)');
 
 
 %% Compare windowed spectra from the complete autocorrelation sequence
 figure;
 plot(kx, 20*log10(abs([Pb, ...
-                       Pbartlett, ...
-                       Phanning, ...
-                       Phamming, ...
-                       Pblackman])),'*');
+    Pbartlett, ...
+    Phanning, ...
+    Phamming, ...
+    Pblackman])));
 
 legend('Baseline','Bartlett','Hanning','Hamming','Blackman');
 xlabel('Lag');

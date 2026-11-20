@@ -5,7 +5,7 @@ x = x(:); % Make sure x is a column vector
 
 if nargin == 2
     if strcmpi(win,'bartlett')
-        w = bartlett(N); % Använder inbyggda funktionerna för att skapa fönstrena
+        w = bartlett(N); % Using built in functions to construct sampling windows
     elseif strcmpi(win,'hanning')
         w = hanning(N);
     elseif strcmpi(win,'hamming')
