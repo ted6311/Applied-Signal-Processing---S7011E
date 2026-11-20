@@ -8,4 +8,5 @@ function [r,k] = acs2(X)
         xstar = flip(x);
         r = r + conv(x,xstar);
     end
+    r = r./Nrows./Ncols;
 end
