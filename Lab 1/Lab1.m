@@ -108,10 +108,14 @@ ylabel('Power/frequency (dB)');
 grid on;
 
 %% The periodograms from the complete acs
+
 x = X(:);
 
 [rx, kx] = my_acs(x);
+fprintf('Elapsed time for my_acs:')
+
 Pb = fft(rx);
+fprintf('Elapsed time for fft :')
 
 Pbartlett = my_periodogram(x,'bartlett');
 Phanning  = my_periodogram(x,'hanning');
