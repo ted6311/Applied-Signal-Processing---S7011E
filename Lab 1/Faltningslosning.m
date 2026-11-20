@@ -2,6 +2,7 @@
 clear; clc; 
 
 
+
 % X-Matrix 1000x100
 load("lab1_data.mat");
 % each column = one realization
@@ -133,19 +134,11 @@ xlabel('Lag');
 ylabel('Power/frequency (dB)');
 
 
-%% Compare windowed spectra from the complete autocorrelation sequence
-figure;
-plot(kx, 10*log10(abs([Pb, ...
-    Pbartlett, ...
-    Phanning, ...
-    Phamming, ...
-    Pblackman])));
 
-legend('Baseline','Bartlett','Hanning','Hamming','Blackman');
-xlabel('Lag');
-ylabel('Power/frequency (dB)');
-title('Periodograms using all data X(:)');
-grid on;
+%% Yule - Walker method
+% Estimate AR coefficients and innovation variance using Yule-Walker
+arOrder = 4;
+[arCoefficients, noiseVariance] = aryule(X(:,1), arOrder); % Built in yule walker AR function :)
 
 
 
@@ -153,3 +146,12 @@ grid on;
 % Estimate AR coefficients and innovation variance using Yule-Walker
 arOrder = 4;
 [arCoefficients, noiseVariance] = aryule(X(:,1), arOrder); % Built in yule walker AR function :)
+% Estimate and plot the AR(4) power spectral density
+[arSpectrum, frequency] = freqz(sqrt(noiseVariance), ...
+    [1, arCoefficients], 1024, 'whole');
+figure;
+plot(frequency, 10*log10(abs(arSpectrum).^2));
+title('AR(4) Power Spectral Density using Yule-Walker');
+xlabel('Normalized frequency');
+ylabel('Power/frequency (dB)');
+grid on;
