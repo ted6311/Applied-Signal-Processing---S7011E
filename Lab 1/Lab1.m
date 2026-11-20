@@ -79,7 +79,7 @@ P4t = my_periodogram(my_realization,'blackman');
 
 %% Comparison plot
 figure;
-plot(k, 10*log10(abs([Pt, P1t, P2t, P3t, P4t])));
+plot(k, 20*log10(abs([Pt, P1t, P2t, P3t, P4t])));
 title('Comparison between all windows for realization:',+n)
 legend('Baseline','Bartlett','Hanning','Hamming','Blackman');
 xlabel('Lag');
@@ -106,7 +106,7 @@ meanP4 = mean(P4, 2);
 
 %% Compare averaged periodogram estimates
 figure;
-plot(k, 10*log10(abs([meanP, meanP1, meanP2, meanP3, meanP4])));
+plot(k, 20*log10(abs([meanP, meanP1, meanP2, meanP3, meanP4])));
 title('Periodograms of the mean of seperate autocorrelation sequences using different windows')
 legend('Square', 'Bartlett','Hanning','Hamming','Blackman');
 xlabel('lag');
@@ -130,7 +130,7 @@ Pblackman = my_periodogram(x,'blackman');
 
 %% Compare windowed spectra from the complete autocorrelation sequence
 figure;
-plot(kx, 10*log10(abs([Pb, ...
+plot(kx, 20*log10(abs([Pb, ...
                        Pbartlett, ...
                        Phanning, ...
                        Phamming, ...
@@ -148,3 +148,12 @@ grid on;
 % Estimate AR coefficients and innovation variance using Yule-Walker
 arOrder = 4;
 [arCoefficients, noiseVariance] = aryule(X(:,1), arOrder); % Built in yule walker AR function :)
+% Estimate and plot the AR(4) power spectral density
+[arSpectrum, frequency] = freqz(sqrt(noiseVariance), ...
+    [1, arCoefficients], 1024, 'whole');
+figure;
+plot(frequency, 10*log10(abs(arSpectrum).^2));
+title('AR(4) Power Spectral Density using Yule-Walker');
+xlabel('Normalized frequency');
+ylabel('Power/frequency (dB)');
+grid on;
