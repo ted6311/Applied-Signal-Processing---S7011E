@@ -136,3 +136,10 @@ xlabel('Lag');
 ylabel('Power/frequency (dB)');
 title('Periodograms using all data X(:)');
 grid on;
+
+
+
+%% Yule - Walker method
+% Estimate AR coefficients and innovation variance using Yule-Walker
+arOrder = 4;
+[arCoefficients, noiseVariance] = aryule(r, arOrder);
