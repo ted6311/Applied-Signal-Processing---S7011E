@@ -13,7 +13,9 @@ load("lab1_data.mat");
 
 % Plot
 figure;
-plot(k,r)
+plot(sign(k).*log10(abs(k)),r)
+xlabel('lag*10^x')
+
 
 %% 2.2
 
@@ -35,7 +37,7 @@ my_realization = X(:,n);
 [rb,~] = my_acs(my_realization);
 Pt = fft(rb);
 % figure()
-% plot(k, 10*log10(abs(P)));
+% plot(k, 20*log10(abs(P)));
 % title('Baseline periodogram')
 % xlabel('lag');
 % ylabel('Power/frequency (dB)');
@@ -45,7 +47,7 @@ Pt = fft(rb);
 P1t = my_periodogram(my_realization,'bartlett');
 % Plot the estimated power spectral density
 % figure()
-% plot(k, 10*log10(abs(P1)));
+% plot(k, 20*log10(abs(P1)));
 % title('Bartlett window periodogram')
 % xlabel('lag');
 % ylabel('Power/frequency (dB)');
@@ -54,7 +56,7 @@ P1t = my_periodogram(my_realization,'bartlett');
 %% Hanning
 P2t = my_periodogram(my_realization,'hanning');
 % figure()
-% plot(k, 10*log10(abs(P2)));
+% plot(k, 20*log10(abs(P2)));
 % title('Hanning window periodogram');
 % xlabel('lag');
 % ylabel('Power/frequency (dB)');
@@ -63,7 +65,7 @@ P2t = my_periodogram(my_realization,'hanning');
 %% Hamming
 P3t = my_periodogram(my_realization,'hamming');
 % figure()
-% plot(k, 10*log10(abs(P3)));
+% plot(k, 20*log10(abs(P3)));
 % title('Hamming window periodogram');
 % xlabel('lag');
 % ylabel('Power/frequency (dB)');
@@ -72,7 +74,7 @@ P3t = my_periodogram(my_realization,'hamming');
 %% Blackman
 P4t = my_periodogram(my_realization,'blackman');
 % figure()
-% plot(k, 10*log10(abs(P4)));
+% plot(k, 20*log10(abs(P4)));
 % title('Blackman window periodogram');
 % xlabel('lag');
 % ylabel('Power/frequency (dB)');
@@ -117,35 +119,22 @@ grid on;
 %% convultuon
 
 Pb = fft(r);
-Pbartlett = 1/2/pi*conv(Pb,fft(bartlett(length(X(:,1))))); % Faltning i frekvensdomänen, dock problem med att skiten blir större
-Phanning = 1/2/pi*conv(Pb,fft(hanning(length(X(:,1)))));
-Phamming = 1/2/pi*conv(Pb,fft(hamming(length(X(:,1)))));
-Pblackman = 1/2/pi*conv(Pb,fft(blackman(length(X(:,1)))));
+Pbartlett = 1/2/pi/length(X(:,1))*conv(Pb,fft(bartlett(length(X(:,1))))); % Faltning i frekvensdomänen, dock problem med att skiten blir större
+Phanning = 1/2/pi/length(X(:,1))*conv(Pb,fft(hanning(length(X(:,1)))));
+Phamming = 1/2/pi/length(X(:,1))*conv(Pb,fft(hamming(length(X(:,1)))));
+Pblackman = 1/2/pi/length(X(:,1))*conv(Pb,fft(blackman(length(X(:,1)))));
 
 
 % Möjligt att man behöver
 % plotta så här, då det blir en väldigt synlig cutoff vid 2000:e värdet.
 
+figure
 plot(k, 20*log10(abs([Pb,Pbartlett(1:length(Pb)), Phanning(1:length(Pb)), ...
     Phamming(1:length(Pb)), Pblackman(1:length(Pb))])));
 legend('Baseline','Bartlett','Hanning','Hamming','Blackman');
 xlabel('Lag');
 ylabel('Power/frequency (dB)');
 
-
-%% Compare windowed spectra from the complete autocorrelation sequence
-figure;
-plot(kx, 20*log10(abs([Pb, ...
-    Pbartlett, ...
-    Phanning, ...
-    Phamming, ...
-    Pblackman])));
-
-legend('Baseline','Bartlett','Hanning','Hamming','Blackman');
-xlabel('Lag');
-ylabel('Power/frequency (dB)');
-title('Periodograms using all data X(:)');
-grid on;
 
 
 
