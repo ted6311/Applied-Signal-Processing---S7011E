@@ -10,17 +10,47 @@ load("wiener_data.mat") % x[n]
 % v[n] = colored noise
 
 % x[n]= v[n] {0≤n≤1000}, v[n]+d[n] {1001≤n≤2000}
-
+% which here is: x[n]= v[n] {1≤n≤1001}, v[n]+d[n] {1002≤n≤2001}
 
 v = x(1:1001);
-v = sort(v);
-v1 = v(1:500);
-v2 = v(502:1001);
-v1 = sort(v1);
-v2 = flip(sort(v2));
-v = [v1; v(501); v2];
-
-n = -500:500;
+vd = x(1002:2001);
 
 
-plot(n,v)
+%% a) 
+
+% Noise = stationary
+
+
+
+[acf,lags] = xcorr(v, 'biased');
+
+figure;
+plot(lags, acf);
+xlabel('Lag k');
+ylabel('Autocorrelation r_{v}[k]');
+title('ACF of noise v[n]');
+grid on;
+
+% we see that it's symmetrical. i.e. r_{v}[k]=r_{v}[-k]
+
+
+% seperate to 10 segments of 100 lags each
+
+acf_total = zeros(1, 199);
+
+for k = 1:10
+    segment = v((k-1)*100+1 : k*100);
+    acf_segment = xcorr(segment, 'biased');
+    acf_total = acf_total + acf_segment;
+end
+
+acf_avg = acf_total / 10;
+
+lags = -99:99;
+
+figure;
+plot(lags, acf_avg);
+xlabel('Lag k');
+ylabel('Autocorrelation r_{v}[k]');
+title('ACF using 10 segments');
+grid on;
