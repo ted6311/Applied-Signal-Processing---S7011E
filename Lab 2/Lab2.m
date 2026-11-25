@@ -77,3 +77,64 @@ title('Positive lags of ACF of x[n]');
 grid on;
 
 test = acf2(idx);
+
+
+%% c) Wiener filter for suppresing v[n] in x[n]
+
+% The easiest sol might be to estimate the noise so we later can calculate:
+% hat{d}=x-hat{v}
+
+% Wiener hopf: Rxx*w=r_{vx} (v is what we search for and x is the input)
+
+
+M = 5; % Filter order
+
+[acf_v, lags_v] = xcorr(v, M, 'biased');
+r_vv = acf_v(lags_v >= 0);
+
+
+[acf_x, lags_x] = xcorr(x2, M, 'biased');
+r_xx = acf_x(lags_x >= 0);
+
+% Autocorrelation-matrix
+R_xx = toeplitz(r_xx);
+
+% correlation between x and v
+% Assuming d[n] and v[n] are uncorrelated:
+% r_xv[k] = r_vv[k]
+
+r_xv = r_vv(:);
+
+
+w = R_xx \ r_xv;
+
+% Estimate noise in the entire signal
+v_hat = filter(w, 1, x);
+
+
+d_hat = x - v_hat;
+
+
+% Plot 
+
+figure;
+subplot(2,1,1);
+plot(x);
+title('Original signal x[n]');
+xlabel('n');
+ylabel('Amplitude');
+grid on;
+
+subplot(2,1,2);
+plot(d_hat);
+title('Filtered signal d_{hat}[n]');
+xlabel('n');
+ylabel('Amplitude');
+grid on;
+
+
+% Freq response
+
+figure;
+freqz(w, 1, 1024);
+title('Frequency response of Wiener filter');
