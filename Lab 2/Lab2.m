@@ -13,7 +13,7 @@ load("wiener_data.mat") % x[n]
 % which here is: x[n]= v[n] {1≤n≤1001}, v[n]+d[n] {1002≤n≤2001}
 
 v = x(1:1001);
-vd = x(1002:2001);
+x2 = x(1002:2001);
 
 
 %% a) 
@@ -34,7 +34,7 @@ grid on;
 % we see that it's symmetrical. i.e. r_{v}[k]=r_{v}[-k]
 
 
-% seperate to 10 segments of 100 lags each
+% seperate to 10 segments of 100 SAMPLES each
 
 acf_total = zeros(1, 199);
 
@@ -52,5 +52,28 @@ figure;
 plot(lags, acf_avg);
 xlabel('Lag k');
 ylabel('Autocorrelation r_{v}[k]');
-title('ACF using 10 segments');
+title('Average ACF using 10 segments');
 grid on;
+
+%% b) plot xn=dn+vn ACF
+
+[acf2,lags2] = xcorr(x2, 'biased');
+
+figure;
+plot(lags2, acf2);
+xlabel('Lag k');
+ylabel('Autocorrelation r_{x}[k]');
+title('ACF of x[n]=v[n]+d[n]');
+grid on;
+
+
+idx = lags2 >= 0;
+
+figure;
+plot(lags2(idx), acf2(idx));
+xlabel('Lag k');
+ylabel('Autocorrelation r_x[k]');
+title('Positive lags of ACF of x[n]');
+grid on;
+
+test = acf2(idx);
