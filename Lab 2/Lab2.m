@@ -87,7 +87,7 @@ test = acf2(idx);
 % Wiener hopf: Rxx*w=r_{vx} (v is what we search for and x is the input)
 
 
-M = 5; % Filter order
+M = 20; % Filter order
 
 [acf_v, lags_v] = xcorr(v, M, 'biased');
 r_vv = acf_v(lags_v >= 0);
