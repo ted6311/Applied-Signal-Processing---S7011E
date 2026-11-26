@@ -89,11 +89,11 @@ test = acf2(idx);
 
 M = 20; % Filter order
 
-[acf_v, lags_v] = xcorr(v, M, 'biased');
+[acf_v, lags_v] = xcorr(v, M-1, 'biased');
 r_vv = acf_v(lags_v >= 0);
 
 
-[acf_x, lags_x] = xcorr(x2, M, 'biased');
+[acf_x, lags_x] = xcorr(x2, M-1, 'biased');
 r_xx = acf_x(lags_x >= 0);
 
 % Autocorrelation-matrix
@@ -133,8 +133,16 @@ ylabel('Amplitude');
 grid on;
 
 
+
 % Freq response
 
 figure;
 freqz(w, 1, 1024);
 title('Frequency response of Wiener filter');
+
+
+figure;
+hold on;
+plot(x(10000:20000))
+grid on;
+title('Complete signal x[n]');
