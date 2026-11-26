@@ -108,11 +108,17 @@ r_xv = r_vv(:);
 w = R_xx \ r_xv;
 
 % Estimate noise in the entire signal
-v_hat = filter(w, 1, x);
+
+% test, bara för x[n]=d[n]+v[n] 
+
+A = x(10001:20000);
+
+% v_hat = filter(w, 1, x);
+v_hat = filter(w, 1, A);
 
 
-d_hat = x - v_hat;
-
+% d_hat = x - v_hat;
+d_hat = A - v_hat;
 
 % Plot 
 
@@ -140,8 +146,52 @@ freqz(w, 1, 1024);
 title('Frequency response of Wiener filter');
 
 
+
+
+%% Test for different M
+
+M_values = [2, 4, 8, 20];
+
+%M_values = [16, 32, 64, 128];
+
 figure;
-hold on;
-plot(x)
-grid on;
-title('Complete signal x[n]');
+
+for i = 1:length(M_values)
+
+    M = M_values(i);
+
+    % Autocorrelation of v[n]
+    [acf_v, lags_v] = xcorr(v, M-1, 'biased');
+    r_vv = acf_v(lags_v >= 0);
+
+    % Autocorrelation of x[n]
+    [acf_x, lags_x] = xcorr(x2, M-1, 'biased');
+    r_xx = acf_x(lags_x >= 0);
+
+    % Autocorrelation matrix
+    R_xx = toeplitz(r_xx);
+
+    % Cross-correlation between x and v
+    r_xv = r_vv(:);
+
+    % Wiener-Hopf equation
+    w = R_xx \ r_xv;
+
+    % Test on the same part of the signal
+    A = x(10001:20000);
+
+    % Estimate noise
+    v_hat = filter(w, 1, A);
+
+    % Estimate desired signal
+    d_hat = A - v_hat;
+
+    % Plot
+    subplot(2,2,i);
+    plot(d_hat);
+    title(['Filtered signal, M = ', num2str(M)]);
+    xlabel('n');
+    ylabel('Amplitude');
+    grid on;
+
+end
