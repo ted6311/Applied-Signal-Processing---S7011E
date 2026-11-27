@@ -124,7 +124,7 @@ d_hat = A - v_hat;
 
 figure;
 subplot(2,1,1);
-plot(x);
+plot(A);
 title('Original signal x[n]');
 xlabel('n');
 ylabel('Amplitude');
